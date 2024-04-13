@@ -59,5 +59,5 @@ resource "github_repository_deploy_key" "deploy_key" {
 
 resource "github_actions_secret" "name" {
   repository  = github_repository.repository.name
-  secret_name = "TERRAFORM"
+  secret_name = "PAT"
 }
