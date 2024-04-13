@@ -11,11 +11,10 @@ terraform {
 
 provider "github" {}
 
-data "github_repository" "repository" {
-  full_name        = "Practical-DevOps-GitHub/github-terraform-task-dzenziur"
-  name             = var.repository_name
-  allow_auto_merge = false
-  visibility       = "private"
+resource "github_repository" "repository" {
+  name       = var.repository_name
+  visibility = "private"
+  allow_merge_commit = false
 }
 
 resource "github_repository_collaborator" "collaborator" {
