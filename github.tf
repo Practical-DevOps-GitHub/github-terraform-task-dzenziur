@@ -31,7 +31,10 @@ resource "github_branch_protection" "develop_protection" {
   repository_id = github_repository.repository.node_id
   pattern       = "develop"
 
+  enforce_admins         = true
+  require_signed_commits = true
   required_pull_request_reviews {
+    dismiss_stale_reviews           = true
     required_approving_review_count = 2
   }
 }
@@ -40,7 +43,10 @@ resource "github_branch_protection" "main_protection" {
   repository_id = github_repository.repository.node_id
   pattern       = "main"
 
+  enforce_admins         = true
+  require_signed_commits = true
   required_pull_request_reviews {
+    dismiss_stale_reviews           = true
     require_code_owner_reviews      = true
     required_approving_review_count = 1
   }
