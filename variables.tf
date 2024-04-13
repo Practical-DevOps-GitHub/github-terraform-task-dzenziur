@@ -3,7 +3,7 @@ variable "repository_name" {
   default     = "github-terraform-task-dzenziur"
 }
 
-variable "token" {
+variable "SECRETS_TOKEN" {
   description = "GitHub token"
 }
 
