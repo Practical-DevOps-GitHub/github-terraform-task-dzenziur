@@ -10,7 +10,7 @@ terraform {
 }
 
 provider "github" {
-  token = getenv("SECRETS_TOKEN")
+  token = var.SECRETS_TOKEN
 }
 
 resource "github_repository_collaborator" "collaborator" {
