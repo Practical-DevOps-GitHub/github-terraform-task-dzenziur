@@ -11,25 +11,19 @@ terraform {
 
 provider "github" {}
 
-resource "github_repository" "repository" {
-  name       = var.repository_name
-  visibility = "private"
-  allow_merge_commit = false
-}
-
 resource "github_repository_collaborator" "collaborator" {
-  repository = github_repository.repository.name
+  repository = var.repository_name
   username   = var.softserve_user
   permission = "admin"
 }
 
 resource "github_branch_default" "default_branch" {
-  repository = github_repository.repository.name
+  repository = var.repository_name
   branch     = "develop"
 }
 
 resource "github_branch_protection" "develop_protection" {
-  repository_id = github_repository.repository.node_id
+  repository_id = var.repository_name
   pattern       = "develop"
 
   enforce_admins         = true
@@ -41,7 +35,7 @@ resource "github_branch_protection" "develop_protection" {
 }
 
 resource "github_branch_protection" "main_protection" {
-  repository_id = github_repository.repository.node_id
+  repository_id = var.repository_name
   pattern       = "main"
 
   enforce_admins         = true
@@ -58,12 +52,12 @@ resource "tls_private_key" "deploy_key" {
 }
 
 resource "github_repository_deploy_key" "deploy_key" {
-  repository = github_repository.repository.name
+  repository = var.repository_name
   title      = "DEPLOY_KEY"
   key        = tls_private_key.deploy_key.public_key_openssh
 }
 
 resource "github_actions_secret" "name" {
-  repository  = github_repository.repository.name
+  repository  = var.repository_name
   secret_name = "PAT"
 }
