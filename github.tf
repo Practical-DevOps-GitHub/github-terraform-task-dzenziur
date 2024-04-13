@@ -9,9 +9,7 @@ terraform {
   required_version = "~> 1.8.0"
 }
 
-provider "github" {
-  token = var.SECRETS_TOKEN
-}
+provider "github" {}
 
 resource "github_repository_collaborator" "collaborator" {
   repository = var.repository_name
