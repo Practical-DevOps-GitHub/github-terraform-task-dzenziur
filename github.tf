@@ -60,7 +60,6 @@ resource "github_repository_deploy_key" "deploy_key" {
   repository = github_repository.repository.name
   title      = "DEPLOY_KEY"
   key        = tls_private_key.deploy_key.public_key_openssh
-  read_only  = true
 }
 
 resource "github_actions_secret" "name" {
