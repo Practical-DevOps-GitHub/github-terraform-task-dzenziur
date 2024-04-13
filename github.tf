@@ -11,38 +11,38 @@ terraform {
 
 provider "github" {}
 
+resource "github_repository" "repository" {
+  name       = var.repository_name
+  visibility = "private"
+}
+
 resource "github_repository_collaborator" "collaborator" {
-  repository = var.repository_name
+  repository = github_repository.repository.name
   username   = var.softserve_user
   permission = "admin"
 }
 
 resource "github_branch_default" "default_branch" {
-  repository = var.repository_name
+  repository = github_repository.repository.name
   branch     = "develop"
 }
 
-resource "github_branch_protection_v3" "develop_protection" {
-  repository = var.repository_name
-  branch     = "develop"
+resource "github_branch_protection" "develop_protection" {
+  repository_id = github_repository.repository.node_id
+  pattern       = "develop"
 
   required_pull_request_reviews {
     required_approving_review_count = 2
   }
 }
 
-resource "github_branch_protection_v3" "main_protection" {
-  repository = var.repository_name
-  branch     = "main"
-
-  restrictions {
-    users = [var.softserve_user]
-  }
+resource "github_branch_protection" "main_protection" {
+  repository_id = github_repository.repository.node_id
+  pattern       = "main"
 
   required_pull_request_reviews {
     require_code_owner_reviews      = true
     required_approving_review_count = 1
-    dismissal_users                 = [var.softserve_user]
   }
 }
 
@@ -51,13 +51,13 @@ resource "tls_private_key" "deploy_key" {
 }
 
 resource "github_repository_deploy_key" "deploy_key" {
-  repository = var.repository_name
+  repository = github_repository.repository.name
   title      = "DEPLOY_KEY"
   key        = tls_private_key.deploy_key.public_key_openssh
   read_only  = true
 }
 
 resource "github_actions_secret" "name" {
-  repository  = var.repository_name
+  repository  = github_repository.repository.name
   secret_name = "TERRAFORM"
 }
